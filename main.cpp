@@ -124,26 +124,23 @@ int main(int argc, char *argv[]) {
                     state = 9;
                     break;
                 case ':':
-                    state = 10;
+                    state = 0;
+                    ret(DELIMITER, ":");
                     break;
                 case '/':
                     state = 11;
                     break;
                 case '=':
-                    state = 0;
-                    ret(OPERATOR, "=");
+                    state = 24;
                     break;
                 case '+':
-                    state = 0;
-                    ret(OPERATOR, "+");
+                    state = 20;
                     break;
                 case '-':
-                    state = 0;
-                    ret(OPERATOR, "-");
+                    state = 21;
                     break;
                 case '*':
-                    state = 0;
-                    ret(OPERATOR, "*");
+                    state = 22;
                     break;
                 case '(':
                     state = 0;
@@ -157,9 +154,52 @@ int main(int argc, char *argv[]) {
                     state = 0;
                     ret(DELIMITER, ";");
                     break;
-                case '\'':
+                case '.':
                     state = 0;
-                    ret(OPERATOR, "'");
+                    ret(OPERATOR, ".");
+                    break;
+                case ',':
+                    state = 0;
+                    ret(DELIMITER, ",");
+                    break;
+                case '?':
+                    state = 0;
+                    ret(DELIMITER, "?");
+                    break;
+                case '[':
+                    state = 0;
+                    ret(DELIMITER, "[");
+                    break;
+                case ']':
+                    state = 0;
+                    ret(DELIMITER, "]");
+                    break;
+                case '{':
+                    state = 0;
+                    ret(DELIMITER, "}");
+                    break;
+                case '}':
+                    state = 0;
+                    ret(DELIMITER, "}");
+                    break;
+                case '&':
+                    state = 16;
+                    break;
+                case '|':
+                    state = 17;
+                    break;
+                case '^':
+                    state = 18;
+                    break;
+                case '%':
+                    state = 23;
+                    break;
+                case '!':
+                    state = 19;
+                    break;
+                case '~':
+                    state = 0;
+                    ret(OPERATOR, "~");
                     break;
                 default:
                     state = 13;
@@ -285,9 +325,11 @@ int main(int argc, char *argv[]) {
                 ret(OPERATOR, "<=");
                 break;
             case '<':
-                cat(C);
-                state = 0;
-                ret(OPERATOR, "<<");
+                // cat(C);
+                // state = 0;
+                // ret(OPERATOR, "<<");
+                // break;
+                state = 14;
                 break;
             // [TODO] 支持"<<="
             default:
@@ -307,14 +349,34 @@ int main(int argc, char *argv[]) {
                 ret(OPERATOR, ">=");
                 break;
             case '>':
-                cat(C);
+                // cat(C);
+                // state = 0;
+                // ret(OPERATOR, ">>");
+                // break;
+                state = 15;
+                break;
+            default:
+                retract();
                 state = 0;
-                ret(OPERATOR, ">>");
+                ret(OPERATOR, ">");
                 break;
             }
             break;
-        case 10:
-            // [TODO] C语言没有这个操作符，重做
+        case 10: // 接收"="
+            cat(C);
+            get_char();
+            switch (C) {
+            case '=':
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "==");
+                break;
+            default:
+                retract;
+                state = 0;
+                ret(OPERATOR, "=");
+                break;
+            }
             break;
         case 11:
             cat(C);
@@ -345,17 +407,197 @@ int main(int argc, char *argv[]) {
             error();
             state = 0;
             break;
+        case 14: // 接收"<<"
+            cat(C);
+            get_char();
+            if (C == '=') {
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "<<=");
+            } else {
+                retract();
+                state = 0;
+                ret(OPERATOR, "<<");
+            }
+            break;
+        case 15: // 接收">>"
+            cat(C);
+            get_char();
+            if (C == '=') {
+                cat(C);
+                state = 0;
+                ret(OPERATOR, ">>=");
+            } else {
+                retract();
+                state = 0;
+                ret(OPERATOR, ">>");
+            }
+            break;
+        case 16: // 接收"&"
+            cat(C);
+            get_char();
+            switch (C) {
+            case '&':
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "&&");
+                break;
+            case '=':
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "&=");
+                break;
+            default:
+                retract();
+                state = 0;
+                ret(OPERATOR, "&");
+                break;
+            }
+            break;
+        case 17: // 接收"|"
+            cat(C);
+            get_char();
+            switch (C) {
+            case '|':
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "||");
+                break;
+            case '=':
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "|=");
+                break;
+            default:
+                retract();
+                state = 0;
+                ret(OPERATOR, "|");
+                break;
+            }
+            break;
+        case 18: // 接收"^"
+            cat(C);
+            get_char();
+            if (C == '=') {
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "^=");
+            } else {
+                retract();
+                state = 0;
+                ret(OPERATOR, "^");
+            }
+            break;
+        case 19: // 接收"!"
+            cat(C);
+            get_char();
+            if (C == '=') {
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "!=");
+            } else {
+                retract();
+                state = 0;
+                ret(OPERATOR, "!");
+            }
+            break;
+        case 20: // 接收"+"
+            cat(C);
+            get_char();
+            switch (C) {
+            case '+':
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "++");
+                break;
+            case '=':
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "+=");
+                break;
+            default:
+                retract();
+                state = 0;
+                ret(OPERATOR, "+");
+                break;
+            }
+            break;
+        case 21: // 接收"-"
+            cat(C);
+            get_char();
+            switch (C) {
+            case '-':
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "--");
+                break;
+            case '=':
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "-=");
+                break;
+            case '>':
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "->");
+                break;
+            default:
+                retract();
+                state = 0;
+                ret(OPERATOR, "-");
+                break;
+            }
+            break;
+        case 22: // 接收"*"
+            cat(C);
+            get_char();
+            if (C == '=') {
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "*=");
+            } else {
+                retract();
+                state = 0;
+                ret(OPERATOR, "*");
+            }
+            break;
+        case 23: // 接收"%"
+            cat(C);
+            get_char();
+            if (C == '=') {
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "%=");
+            } else {
+                retract();
+                state = 0;
+                ret(OPERATOR, "%");
+            }
+            break;
+        case 24: // 接收"="
+            cat(C);
+            get_char();
+            if (C == '=') {
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "==");
+            } else {
+                retract();
+                state = 0;
+                ret(OPERATOR, "=");
+            }
+            break;
         }
     } while (C != '\0');
 
-    std::cout<<line_no-1<<std::endl;
+    std::cout << line_no - 1 << std::endl;
 
-    for (int i=KEYWORD;i<=STRING;++i) {
-        std::cout<<counter[i]<<" ";
+    for (int i = KEYWORD; i <= STRING; ++i) {
+        std::cout << counter[i] << " ";
     }
-    std::cout<<counter[NUMBER]<<std::endl;
+    std::cout << counter[NUMBER] << std::endl;
 
-    std::cout<<counter[ERROR]<<std::endl;
+    std::cout << counter[ERROR] << std::endl;
 
     return 0;
 }
@@ -366,6 +608,9 @@ bool load_file(std::string file_name) {
         return false;
     buffer.assign(std::istreambuf_iterator<char>(fin),
                   std::istreambuf_iterator<char>());
+
+    buffer.push_back('\n'); // [INFO] 线上测试很可能文件末尾没有换行符
+
     buffer.push_back('\0');
     forward = buffer.data(); // 指向首字符
     return true;
@@ -414,10 +659,12 @@ void cat(char C) {
 }
 
 void retract() {
-    if (!forward || forward == buffer.data()) return;  // 边界保护
-    --forward;                         // 回退到上一个字符
-    if (*forward == '\n' && line_no > 1) --line_no;    // ← 关键：跨回换行要减行号
-    // C = *forward;                      // 可选：让 C 与 forward 同步
+    if (!forward || forward == buffer.data())
+        return; // 边界保护
+    --forward;  // 回退到上一个字符
+    if (*forward == '\n' && line_no > 1)
+        --line_no; // ← 关键：跨回换行要减行号
+    C = *forward;  // 可选：让 C 与 forward 同步
     return;
 }
 

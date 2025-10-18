@@ -1,0 +1,17 @@
+# BasedOnStyle: Chromium
+# IndentWidth: 4
+# ColumnLimit: 150
+# BreakBeforeReturn: true
+# AllowShortFunctionsOnASingleLine: false
+
+# 缩进宽度
+IndentWidth: 4
+
+# 访问说明符偏移
+AccessModifierOffset: -4
+
+# 每行字符的限制，0表示没有限制
+ColumnLimit: 80
+
+# 允许短的函数放在同一行: None, InlineOnly(定义在类中), Empty(空函数), Inline(定义在类中，空函数), All
+AllowShortFunctionsOnASingleLine: Empty
