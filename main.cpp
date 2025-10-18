@@ -384,8 +384,15 @@ int main(int argc, char *argv[]) {
             switch (C) {
             case '*':
                 state = 12;
-            // [TODO] 支持//注释
-            // [TODO] 支持/=操作
+                break;
+            case '=':
+                cat(C);
+                state = 0;
+                ret(OPERATOR, "/=");
+                break;
+            case '/':
+                state = 25;
+                break;
             default:
                 retract();
                 state = 0;
@@ -586,6 +593,11 @@ int main(int argc, char *argv[]) {
                 state = 0;
                 ret(OPERATOR, "=");
             }
+            break;
+        case 25:
+            cat(C);
+            get_char();
+            // [TODO] 支持//注释
             break;
         }
     } while (C != '\0');
