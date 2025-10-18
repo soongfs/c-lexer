@@ -177,7 +177,7 @@ int main(int argc, char *argv[]) {
                     break;
                 case '{':
                     state = 0;
-                    ret(DELIMITER, "}");
+                    ret(DELIMITER, "{");
                     break;
                 case '}':
                     state = 0;
