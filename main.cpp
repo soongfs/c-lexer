@@ -94,7 +94,8 @@ void error();
 int main(int argc, char *argv[]) {
 
     std::string file_name = argv[1]; // 该字符串变量为识别的C语言程序文件名
-    // std::string file_name = "sample.c";
+    // std::string file_name = "sample.txt"; //[DEBUG]
+    // std::string file_name = "test.txt"; //[DEBUG]
 
     /*程序每次运行只需要考虑识别一个C语言程序;
       需要使用读取文件的操作,可以在自己的本地环境里创建样例文件进行测试；
@@ -203,6 +204,9 @@ int main(int argc, char *argv[]) {
                     break;
                 case '\'':
                     state = 26;
+                    break;
+                case '"':
+                    state = 27;
                     break;
                 default:
                     state = 13;
@@ -365,7 +369,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
             break;
-        case 10: // 接收"="
+        case 10: // 接收=
             cat();
             get_char();
             switch (C) {
@@ -417,7 +421,7 @@ int main(int argc, char *argv[]) {
             error();
             state = 0;
             break;
-        case 14: // 接收"<<"
+        case 14: // 接收<<
             cat();
             get_char();
             if (C == '=') {
@@ -430,7 +434,7 @@ int main(int argc, char *argv[]) {
                 ret(OPERATOR, "<<");
             }
             break;
-        case 15: // 接收">>"
+        case 15: // 接收>>
             cat();
             get_char();
             if (C == '=') {
@@ -443,7 +447,7 @@ int main(int argc, char *argv[]) {
                 ret(OPERATOR, ">>");
             }
             break;
-        case 16: // 接收"&"
+        case 16: // 接收&
             cat();
             get_char();
             switch (C) {
@@ -464,7 +468,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
             break;
-        case 17: // 接收"|"
+        case 17: // 接收|
             cat();
             get_char();
             switch (C) {
@@ -485,7 +489,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
             break;
-        case 18: // 接收"^"
+        case 18: // 接收^
             cat();
             get_char();
             if (C == '=') {
@@ -498,7 +502,7 @@ int main(int argc, char *argv[]) {
                 ret(OPERATOR, "^");
             }
             break;
-        case 19: // 接收"!"
+        case 19: // 接收!
             cat();
             get_char();
             if (C == '=') {
@@ -511,7 +515,7 @@ int main(int argc, char *argv[]) {
                 ret(OPERATOR, "!");
             }
             break;
-        case 20: // 接收"+"
+        case 20: // 接收+
             cat();
             get_char();
             switch (C) {
@@ -532,7 +536,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
             break;
-        case 21: // 接收"-"
+        case 21: // 接收-
             cat();
             get_char();
             switch (C) {
@@ -558,7 +562,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
             break;
-        case 22: // 接收"*"
+        case 22: // 接收*
             cat();
             get_char();
             if (C == '=') {
@@ -571,7 +575,7 @@ int main(int argc, char *argv[]) {
                 ret(OPERATOR, "*");
             }
             break;
-        case 23: // 接收"%"
+        case 23: // 接收%
             cat();
             get_char();
             if (C == '=') {
@@ -584,7 +588,7 @@ int main(int argc, char *argv[]) {
                 ret(OPERATOR, "%");
             }
             break;
-        case 24: // 接收"="
+        case 24: // 接收=
             cat();
             get_char();
             if (C == '=') {
@@ -597,24 +601,47 @@ int main(int argc, char *argv[]) {
                 ret(OPERATOR, "=");
             }
             break;
-        case 25: // 接收"//"
+        case 25: // 接收//
             token.clear();
             get_char();
             while (C != '\n')
                 get_char();
             state = 0;
             break;
-        case 26: // 接收"'"
+        case 26: // 接收'
             cat();
             get_char();
-            while (C != '\'') { // [FIXME] 与string混淆
+            while (C != '\'') { // [FIXME] 无限接收？
                 cat();
                 get_char();
             }
             cat();
             get_char();
+            retract();
             state = 0;
             ret(CHARCON, token);
+            break;
+        case 27: // 接收"
+            cat();
+            get_char();
+            while (C != '"') {
+                if (C == '\\') {
+                    cat();
+                    get_char();
+                    if (C == '"') {
+                        cat();
+                        get_char();
+                    }
+                } else {
+                    cat();
+                    get_char();
+                }
+            }
+            cat();
+            get_char();
+            retract();
+            state = 0;
+            ret(STRING, token);
             break;
         }
     } while (C != '\0');
