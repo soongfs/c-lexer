@@ -209,6 +209,7 @@ int main(int argc, char *argv[]) {
                     state = 27;
                     break;
                 default:
+                    cat();
                     state = 13;
                     break;
                 }
@@ -419,7 +420,7 @@ int main(int argc, char *argv[]) {
                 state = 12;
             break;
         case 13: // 错误处理
-            cat();
+            // cat();
             error();
             state = 0;
             break;
@@ -613,20 +614,24 @@ int main(int argc, char *argv[]) {
         case 26: // 接收'
             cat();
             get_char();
-            while (C != '\'') { // [FIXME] 无限接收？
+            while (C != '\'' && C != '\n') { // [FIXME] 无限接收？
                 cat();
                 get_char();
             }
-            cat();
-            get_char();
-            retract();
-            state = 0;
-            ret(CHARCON, token);
+            if (C == '\n') {
+                state = 13;
+            } else {
+                cat();
+                get_char();
+                retract();
+                state = 0;
+                ret(CHARCON, token);
+            }
             break;
         case 27: // 接收"
             cat();
             get_char();
-            while (C != '"') {
+            while (C != '"' && C != '\n') {
                 if (C == '\\') {
                     cat();
                     get_char();
@@ -639,11 +644,15 @@ int main(int argc, char *argv[]) {
                     get_char();
                 }
             }
-            cat();
-            get_char();
-            retract();
-            state = 0;
-            ret(STRING, token);
+            if (C == '\n') {
+                state = 13;
+            } else {
+                cat();
+                get_char();
+                retract();
+                state = 0;
+                ret(STRING, token);
+            }
             break;
         }
     } while (C != '\0');
