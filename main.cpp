@@ -247,8 +247,15 @@ int main(int argc, char *argv[]) {
                     state = 5;
                     break;
                 default:
-                    cat();
-                    state = 13;
+                    if (letter(C)) {
+                        cat();
+                        // retract();
+                        state = 13;
+                    } else {
+                        retract();
+                        state = 0;
+                        ret(NUMBER, token);
+                    }
                     break;
                 }
             }
@@ -260,6 +267,7 @@ int main(int argc, char *argv[]) {
                 state = 4;
             else {
                 cat();
+                retract();
                 state = 13;
             }
             break;
@@ -272,6 +280,7 @@ int main(int argc, char *argv[]) {
                 state = 5;
             else if (letter(C)) {
                 cat();
+                retract();
                 state = 13;
             } else {
                 retract();
@@ -293,7 +302,8 @@ int main(int argc, char *argv[]) {
                     state = 6;
                     break;
                 default:
-                    cat();
+                    // cat();
+                    retract();
                     state = 13;
                     break;
                 }
@@ -306,6 +316,7 @@ int main(int argc, char *argv[]) {
                 state = 7;
             else {
                 cat();
+                retract();
                 state = 13;
             }
             break;
@@ -316,6 +327,7 @@ int main(int argc, char *argv[]) {
                 state = 7;
             else if (letter(C)) {
                 cat();
+                retract();
                 state = 13;
             } else {
                 retract();
