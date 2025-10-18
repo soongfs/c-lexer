@@ -408,6 +408,7 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 12:
+            token.clear();
             get_char();
             while (C != '*')
                 get_char();
