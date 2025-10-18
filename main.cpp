@@ -85,7 +85,7 @@ void get_nbc();
 bool letter(char C);
 bool digit(char C);
 void ret(int kind, std::string tok);
-void cat(char C);
+void cat();
 void retract();
 int reserve(std::string token);
 int table_insert(std::string token);
@@ -211,8 +211,7 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 1:
-            cat(C);
-            get_char();
+            cat() get_char();
             if (letter(C) || digit(C) || C == '_')
                 state = 1;
             else {
@@ -228,8 +227,7 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 2:
-            cat(C);
-            get_char();
+            cat() get_char();
             if (digit(C)) {
                 state = 2;
             } else {
@@ -253,8 +251,7 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 3:
-            cat(C);
-            get_char();
+            cat() get_char();
             if (digit(C))
                 state = 4;
             else {
@@ -263,8 +260,7 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 4:
-            cat(C);
-            get_char();
+            cat() get_char();
             if (digit(C))
                 state = 4;
             else if (C == 'E' || C == 'e')
@@ -276,8 +272,7 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 5:
-            cat(C);
-            get_char();
+            cat() get_char();
             if (digit(C))
                 state = 7;
             else {
@@ -297,8 +292,7 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 6:
-            cat(C);
-            get_char();
+            cat() get_char();
             if (digit(C))
                 state = 7;
             else {
@@ -308,8 +302,7 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 7:
-            cat(C);
-            get_char();
+            cat() get_char();
             if (digit(C))
                 state = 7;
             else {
@@ -319,16 +312,14 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 8:
-            cat(C);
-            get_char();
+            cat() get_char();
             switch (C) {
             case '=':
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "<=");
                 break;
             case '<':
-                // cat(C);
+                // cat()
                 // state = 0;
                 // ret(OPERATOR, "<<");
                 // break;
@@ -343,16 +334,14 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 9:
-            cat(C);
-            get_char();
+            cat() get_char();
             switch (C) {
             case '=':
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, ">=");
                 break;
             case '>':
-                // cat(C);
+                // cat()
                 // state = 0;
                 // ret(OPERATOR, ">>");
                 // break;
@@ -366,12 +355,10 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 10: // 接收"="
-            cat(C);
-            get_char();
+            cat() get_char();
             switch (C) {
             case '=':
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "==");
                 break;
             default:
@@ -382,15 +369,13 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 11:
-            cat(C);
-            get_char();
+            cat() get_char();
             switch (C) {
             case '*':
                 state = 12;
                 break;
             case '=':
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "/=");
                 break;
             case '/':
@@ -418,11 +403,9 @@ int main(int argc, char *argv[]) {
             state = 0;
             break;
         case 14: // 接收"<<"
-            cat(C);
-            get_char();
+            cat() get_char();
             if (C == '=') {
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "<<=");
             } else {
                 retract();
@@ -431,11 +414,9 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 15: // 接收">>"
-            cat(C);
-            get_char();
+            cat() get_char();
             if (C == '=') {
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, ">>=");
             } else {
                 retract();
@@ -444,17 +425,14 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 16: // 接收"&"
-            cat(C);
-            get_char();
+            cat() get_char();
             switch (C) {
             case '&':
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "&&");
                 break;
             case '=':
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "&=");
                 break;
             default:
@@ -465,17 +443,14 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 17: // 接收"|"
-            cat(C);
-            get_char();
+            cat() get_char();
             switch (C) {
             case '|':
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "||");
                 break;
             case '=':
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "|=");
                 break;
             default:
@@ -486,11 +461,9 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 18: // 接收"^"
-            cat(C);
-            get_char();
+            cat() get_char();
             if (C == '=') {
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "^=");
             } else {
                 retract();
@@ -499,11 +472,9 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 19: // 接收"!"
-            cat(C);
-            get_char();
+            cat() get_char();
             if (C == '=') {
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "!=");
             } else {
                 retract();
@@ -512,17 +483,14 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 20: // 接收"+"
-            cat(C);
-            get_char();
+            cat() get_char();
             switch (C) {
             case '+':
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "++");
                 break;
             case '=':
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "+=");
                 break;
             default:
@@ -533,22 +501,18 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 21: // 接收"-"
-            cat(C);
-            get_char();
+            cat() get_char();
             switch (C) {
             case '-':
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "--");
                 break;
             case '=':
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "-=");
                 break;
             case '>':
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "->");
                 break;
             default:
@@ -559,11 +523,9 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 22: // 接收"*"
-            cat(C);
-            get_char();
+            cat() get_char();
             if (C == '=') {
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "*=");
             } else {
                 retract();
@@ -572,11 +534,9 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 23: // 接收"%"
-            cat(C);
-            get_char();
+            cat() get_char();
             if (C == '=') {
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "%=");
             } else {
                 retract();
@@ -585,11 +545,9 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 24: // 接收"="
-            cat(C);
-            get_char();
+            cat() get_char();
             if (C == '=') {
-                cat(C);
-                state = 0;
+                cat() state = 0;
                 ret(OPERATOR, "==");
             } else {
                 retract();
@@ -605,14 +563,11 @@ int main(int argc, char *argv[]) {
             state = 0;
             break;
         case 26: // 接收"'"
-            cat(C);
-            get_char();
+            cat() get_char();
             while (C != '\'') { // [FIXME] 与string混淆
-                cat(C);
-                get_char();
+                cat() get_char();
             }
-            cat(C);
-            get_char();
+            cat() get_char();
             state = 0;
             ret(CHARCON, token);
             break;
@@ -682,7 +637,7 @@ void ret(int kind, std::string tok) {
     return;
 }
 
-void cat(char C) {
+void cat() {
     token += C;
     return;
 }
