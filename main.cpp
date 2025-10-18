@@ -418,7 +418,8 @@ int main(int argc, char *argv[]) {
             else
                 state = 12;
             break;
-        case 13:
+        case 13: // 错误处理
+            cat();
             error();
             state = 0;
             break;
@@ -743,6 +744,7 @@ int table_insert(std::string token) {
 
 void error() {
     // [TODO] 错误分析
-    std::cout << "An error." << std::endl;
+    // std::cout << "An error." << std::endl;
+    ret(ERROR, token);
     return;
 }
