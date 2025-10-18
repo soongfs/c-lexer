@@ -1,0 +1,15 @@
+auto 	double 	int 	struct 	break 	else 	static 	long
+switch 	case 	enum 	register 	typedef 	char 	extern 	return
+union 	const 	float 	short 	unsigned 	continue 	for 	signed
+void 	default 	goto 	sizeof 	volatile 	do 	if 	while
+id1 id2 id3 id4 id5 id6 id7 id8 id9 id10 id11 id12 id13 id14 id15 id16
++ 	- 	* 	/ 	% 	++ 	--
+== 	!= 	> 	< 	>= 	<= 
+&& 	|| 	!
+& 	| 	^ 	~ 	<< 	>> 	
+= 	+= 	-= 	*= 	/= 	%= 	<<=
+>>= 	&= 	^= 	|=
+. 	->
+; 	, 	: 	?
+( 	) 	[ 	]
+{   } 		
