@@ -607,7 +607,14 @@ int main(int argc, char *argv[]) {
         case 26: // 接收"'"
             cat(C);
             get_char();
-            // [TODO] 支持CHARCON
+            while (C != '\'') { // [FIXME] 与string混淆
+                cat(C);
+                get_char();
+            }
+            cat(C);
+            get_char();
+            state = 0;
+            ret(CHARCON, token);
             break;
         }
     } while (C != '\0');
