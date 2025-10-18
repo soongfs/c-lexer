@@ -232,7 +232,7 @@ int main(int argc, char *argv[]) {
                 }
             }
             break;
-        case 2:
+        case 2: // 接收数字
             cat();
             get_char();
             if (digit(C)) {
@@ -243,44 +243,43 @@ int main(int argc, char *argv[]) {
                     state = 3;
                     break;
                 case 'E':
-                    state = 5;
-                    break;
-                // [TODO] 需要处理'e'？
                 case 'e':
                     state = 5;
                     break;
                 default:
-                    retract();
-                    state = 0;
-                    ret(NUMBER, token);
+                    cat();
+                    state = 13;
                     break;
                 }
             }
             break;
-        case 3:
+        case 3: // 接收小数点
             cat();
             get_char();
             if (digit(C))
                 state = 4;
             else {
-                error();
-                state = 0;
+                cat();
+                state = 13;
             }
             break;
-        case 4:
+        case 4: // 接收小数部分
             cat();
             get_char();
             if (digit(C))
                 state = 4;
             else if (C == 'E' || C == 'e')
                 state = 5;
-            else {
+            else if (letter(C)) {
+                cat();
+                state = 13;
+            } else {
                 retract();
                 state = 0;
                 ret(NUMBER, token);
             }
             break;
-        case 5:
+        case 5: // 接收指数符号或第一位数字
             cat();
             get_char();
             if (digit(C))
@@ -294,30 +293,31 @@ int main(int argc, char *argv[]) {
                     state = 6;
                     break;
                 default:
-                    retract();
-                    error();
-                    state = 0;
+                    cat();
+                    state = 13;
                     break;
                 }
             }
             break;
-        case 6:
+        case 6: // 接收指数第一位数字
             cat();
             get_char();
             if (digit(C))
                 state = 7;
             else {
-                retract();
-                error();
-                state = 0;
+                cat();
+                state = 13;
             }
             break;
-        case 7:
+        case 7: // 接收指数后续数字
             cat();
             get_char();
             if (digit(C))
                 state = 7;
-            else {
+            else if (letter(C)) {
+                cat();
+                state = 13;
+            } else {
                 retract();
                 state = 0;
                 ret(NUMBER, token);
@@ -619,6 +619,7 @@ int main(int argc, char *argv[]) {
                 get_char();
             }
             if (C == '\n') {
+                retract();
                 state = 13;
             } else {
                 cat();
@@ -645,6 +646,7 @@ int main(int argc, char *argv[]) {
                 }
             }
             if (C == '\n') {
+                retract();
                 state = 13;
             } else {
                 cat();
