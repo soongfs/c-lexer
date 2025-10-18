@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
             // std::cout << C << std::endl;         // [DEBUG]
             // std::cout << letter(C) << std::endl; // [DEBUG]
             // std::cout << digit(C) << std::endl;  // [DEBUG]
-            if (letter(C))
+            if (letter(C) || C == '_')
                 state = 1;
             else if (digit(C))
                 state = 2;
@@ -201,6 +201,9 @@ int main(int argc, char *argv[]) {
                     state = 0;
                     ret(OPERATOR, "~");
                     break;
+                case '\'':
+                    state = 26;
+                    break;
                 default:
                     state = 13;
                     break;
@@ -210,7 +213,7 @@ int main(int argc, char *argv[]) {
         case 1:
             cat(C);
             get_char();
-            if (letter(C) || digit(C))
+            if (letter(C) || digit(C) || C == '_')
                 state = 1;
             else {
                 retract();
@@ -594,10 +597,17 @@ int main(int argc, char *argv[]) {
                 ret(OPERATOR, "=");
             }
             break;
-        case 25:
+        case 25: // 接收"//"
+            token.clear();
+            get_char();
+            while (C != '\n')
+                get_char();
+            state = 0;
+            break;
+        case 26: // 接收"'"
             cat(C);
             get_char();
-            // [TODO] 支持//注释
+            // [TODO] 支持CHARCON
             break;
         }
     } while (C != '\0');
