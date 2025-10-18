@@ -653,7 +653,8 @@ int main(int argc, char *argv[]) {
     }
     std::cout << counter[NUMBER] << std::endl;
 
-    std::cout << counter[ERROR] << std::endl;
+    // std::cout << counter[ERROR] << std::endl;
+    std::cout << counter[ERROR]; // [INFO] 线上测评无结尾换行
 
     return 0;
 }
