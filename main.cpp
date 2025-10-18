@@ -114,6 +114,8 @@ int main(int argc, char *argv[]) {
             // std::cout << digit(C) << std::endl;  // [DEBUG]
             if (letter(C) || C == '_')
                 state = 1;
+            else if (C == '0')
+                state = 28;
             else if (digit(C))
                 state = 2;
             else {
@@ -666,6 +668,63 @@ int main(int argc, char *argv[]) {
                 retract();
                 state = 0;
                 ret(STRING, token);
+            }
+            break;
+        case 28: // 接收0
+            cat();
+            get_char();
+            if (C == 'x' || C == 'X') {
+                state = 29;
+                cat();
+                get_char();
+            } else if (C == '.') {
+                state = 3;
+            } else if (C == 'e' || C == 'E') {
+                state = 5;
+            } else if ('0' <= C && C <= '7') {
+                state = 30;
+            } else if (C == '8' || C == '9') {
+                cat();
+                state = 13;
+            } else {
+                retract();
+                state = 0;
+                ret(NUMBER, token);
+            }
+            break;
+        case 29: // 接收0x或0X
+            if (digit(C) || ('a' <= C && C <= 'f') || ('A' <= C && C <= 'F')) {
+                state = 31;
+            } else {
+                state = 13;
+            }
+            break;
+        case 30: // 八进制主体
+            cat();
+            get_char();
+            if (C >= '0' && C <= '7')
+                state = 30;
+            else if (C == '8' || C == '9' || C == '_' || letter(C)) {
+                cat();
+                state = 13;
+            } else {
+                retract();
+                state = 0;
+                ret(NUMBER, token);
+            }
+            break;
+        case 31: // 十六进制主体
+            cat();
+            get_char();
+            if (digit(C) || (C >= 'a' && C <= 'f') || (C >= 'A' && C <= 'F')) {
+                state = 31;
+            } else if (letter(C) || C == '_') {
+                cat();
+                state = 13;
+            } else {
+                retract();
+                state = 0;
+                ret(NUMBER, token);
             }
             break;
         }
