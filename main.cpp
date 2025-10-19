@@ -278,7 +278,6 @@ int main(int argc, char *argv[]) {
                                 get_char();
                             }
                         }
-                        // 如果没进错误态 13，则正常收尾
                         if (state != 13) {
                             retract();
                             state = 0;
@@ -900,11 +899,11 @@ void cat() {
 
 void retract() {
     if (!forward || forward == buffer.data())
-        return; // 边界保护
-    --forward;  // 回退到上一个字符
+        return;
+    --forward;
     if (*forward == '\n' && line_no > 1)
-        --line_no; // ← 关键：跨回换行要减行号
-    C = *forward;  // 可选：让 C 与 forward 同步
+        --line_no;
+    C = *forward;
     return;
 }
 
@@ -924,8 +923,6 @@ int table_insert(std::string token) {
 }
 
 void error() {
-    // [TODO] 错误分析
-    // std::cout << "An error." << std::endl;
     ret(ERROR, token);
     return;
 }
