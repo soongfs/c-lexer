@@ -158,8 +158,7 @@ int main(int argc, char *argv[]) {
                     ret(DELIMITER, ";");
                     break;
                 case '.':
-                    state = 0;
-                    ret(OPERATOR, ".");
+                    state = 32;
                     break;
                 case ',':
                     state = 0;
@@ -312,40 +311,19 @@ int main(int argc, char *argv[]) {
                 state = 4;
             else if (C == 'E' || C == 'e')
                 state = 5;
-            else if (letter(C) && C != 'u' && C != 'U' && C != 'l' &&
+            else if (letter(C) && C != 'f' && C != 'F' && C != 'l' &&
                      C != 'L') {
                 cat();
                 retract();
                 state = 13;
             } else {
-                int ucnt = 0, lcnt = 0;
-                while (C == 'u' || C == 'U' || C == 'l' || C == 'L') {
-                    if (C == 'u' || C == 'U') {
-                        if (ucnt == 1) {
-                            cat();
-                            state = 13;
-                            break;
-                        }
-                        ++ucnt;
-                        cat();
-                        get_char();
-                    } else { // l or L
-                        if (lcnt == 2) {
-                            cat();
-                            state = 13;
-                            break;
-                        }
-                        ++lcnt;
-                        cat();
-                        get_char();
-                    }
+                if (C == 'f' || C == 'F' || C == 'l' || C == 'L') {
+                    cat();
+                    get_char();
                 }
-                // 如果没进错误态 13，则正常收尾
-                if (state != 13) {
-                    retract();
-                    state = 0;
-                    ret(NUMBER, token);
-                }
+                retract();
+                state = 0;
+                ret(NUMBER, token);
             }
             break;
         case 5: // 接收指数符号或第一位数字
@@ -385,40 +363,19 @@ int main(int argc, char *argv[]) {
             get_char();
             if (digit(C))
                 state = 7;
-            else if (letter(C) && C != 'u' && C != 'U' && C != 'l' &&
+            else if (letter(C) && C != 'f' && C != 'F' && C != 'l' &&
                      C != 'L') {
                 cat();
                 retract();
                 state = 13;
             } else {
-                int ucnt = 0, lcnt = 0;
-                while (C == 'u' || C == 'U' || C == 'l' || C == 'L') {
-                    if (C == 'u' || C == 'U') {
-                        if (ucnt == 1) {
-                            cat();
-                            state = 13;
-                            break;
-                        }
-                        ++ucnt;
-                        cat();
-                        get_char();
-                    } else { // l or L
-                        if (lcnt == 2) {
-                            cat();
-                            state = 13;
-                            break;
-                        }
-                        ++lcnt;
-                        cat();
-                        get_char();
-                    }
+                if (C == 'f' || C == 'F' || C == 'l' || C == 'L') {
+                    cat();
+                    get_char();
                 }
-                // 如果没进错误态 13，则正常收尾
-                if (state != 13) {
-                    retract();
-                    state = 0;
-                    ret(NUMBER, token);
-                }
+                retract();
+                state = 0;
+                ret(NUMBER, token);
             }
             break;
         case 8:
@@ -478,7 +435,7 @@ int main(int argc, char *argv[]) {
                 ret(OPERATOR, "==");
                 break;
             default:
-                retract;
+                retract();
                 state = 0;
                 ret(OPERATOR, "=");
                 break;
@@ -809,6 +766,17 @@ int main(int argc, char *argv[]) {
                 retract();
                 state = 0;
                 ret(NUMBER, token);
+            }
+            break;
+        case 32:
+            cat();
+            get_char();
+            if (digit(C)) {
+                state = 4;
+            } else {
+                retract();
+                state = 0;
+                ret(OPERATOR, ".");
             }
             break;
         }
