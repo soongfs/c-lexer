@@ -1,10 +1,8 @@
 // 目前只支持测评单文件程序，所以需要将代码都写到这个文件中。
 
-#include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <ostream>
-#include <stdio.h>
 #include <string>
 #include <vector>
 
@@ -112,7 +110,11 @@ int main(int argc, char *argv[]) {
             // std::cout << C << std::endl;         // [DEBUG]
             // std::cout << letter(C) << std::endl; // [DEBUG]
             // std::cout << digit(C) << std::endl;  // [DEBUG]
-            if (letter(C) || C == '_')
+            if (C == 'u')
+                state = 33;
+            else if (C == 'U' || C == 'L')
+                state = 34;
+            else if (letter(C) || C == '_')
                 state = 1;
             else if (C == '0')
                 state = 28;
@@ -669,9 +671,21 @@ int main(int argc, char *argv[]) {
         case 26: // 接收'
             cat();
             get_char();
-            while (C != '\'' && C != '\n') { // [FIXME] 无限接收？
-                cat();
-                get_char();
+            while (C != '\'' && C != '\n') {
+                if (C == '\\') {
+                    cat();
+                    get_char();
+                    if (C == '\'') {
+                        cat();
+                        get_char();
+                    } else if (C == '\\') {
+                        cat();
+                        get_char();
+                    }
+                } else {
+                    cat();
+                    get_char();
+                }
             }
             if (C == '\n') {
                 retract();
@@ -692,6 +706,9 @@ int main(int argc, char *argv[]) {
                     cat();
                     get_char();
                     if (C == '"') {
+                        cat();
+                        get_char();
+                    } else if (C == '\\') {
                         cat();
                         get_char();
                     }
@@ -778,6 +795,36 @@ int main(int argc, char *argv[]) {
                 state = 0;
                 ret(OPERATOR, ".");
             }
+            break;
+        case 33: // 接收u
+            cat();
+            get_char();
+            if (C == '8')
+                state = 35;
+            else if (C == '"')
+                state = 27;
+            else if (C == '\'')
+                state = 26;
+            else
+                state = 1;
+            break;
+        case 34: // 接收U/L
+            cat();
+            get_char();
+            if (C == '"')
+                state = 27;
+            else if (C == '\'')
+                state = 26;
+            else
+                state = 1;
+            break;
+        case 35: // 接收u8
+            cat();
+            get_char();
+            if (C == '"')
+                state = 27;
+            else
+                state = 1;
             break;
         }
     } while (C != '\0');
