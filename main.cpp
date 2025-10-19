@@ -249,14 +249,40 @@ int main(int argc, char *argv[]) {
                     state = 5;
                     break;
                 default:
-                    if (letter(C)) {
+                    if (letter(C) && C != 'u' && C != 'U' && C != 'l' &&
+                        C != 'L') {
                         cat();
                         // retract();
                         state = 13;
                     } else {
-                        retract();
-                        state = 0;
-                        ret(NUMBER, token);
+                        int ucnt = 0, lcnt = 0;
+                        while (C == 'u' || C == 'U' || C == 'l' || C == 'L') {
+                            if (C == 'u' || C == 'U') {
+                                if (ucnt == 1) {
+                                    cat();
+                                    state = 13;
+                                    break;
+                                }
+                                ++ucnt;
+                                cat();
+                                get_char();
+                            } else { // l or L
+                                if (lcnt == 2) {
+                                    cat();
+                                    state = 13;
+                                    break;
+                                }
+                                ++lcnt;
+                                cat();
+                                get_char();
+                            }
+                        }
+                        // 如果没进错误态 13，则正常收尾
+                        if (state != 13) {
+                            retract();
+                            state = 0;
+                            ret(NUMBER, token);
+                        }
                     }
                     break;
                 }
@@ -267,10 +293,16 @@ int main(int argc, char *argv[]) {
             get_char();
             if (digit(C))
                 state = 4;
+            else if (C == 'e' || C == 'E')
+                state = 5;
             else {
-                cat();
+                if (C == 'f' || C == 'F' || C == 'l' || C == 'L') {
+                    cat();
+                    get_char();
+                }
                 retract();
-                state = 13;
+                state = 0;
+                ret(NUMBER, token);
             }
             break;
         case 4: // 接收小数部分
@@ -280,14 +312,40 @@ int main(int argc, char *argv[]) {
                 state = 4;
             else if (C == 'E' || C == 'e')
                 state = 5;
-            else if (letter(C)) {
+            else if (letter(C) && C != 'u' && C != 'U' && C != 'l' &&
+                     C != 'L') {
                 cat();
                 retract();
                 state = 13;
             } else {
-                retract();
-                state = 0;
-                ret(NUMBER, token);
+                int ucnt = 0, lcnt = 0;
+                while (C == 'u' || C == 'U' || C == 'l' || C == 'L') {
+                    if (C == 'u' || C == 'U') {
+                        if (ucnt == 1) {
+                            cat();
+                            state = 13;
+                            break;
+                        }
+                        ++ucnt;
+                        cat();
+                        get_char();
+                    } else { // l or L
+                        if (lcnt == 2) {
+                            cat();
+                            state = 13;
+                            break;
+                        }
+                        ++lcnt;
+                        cat();
+                        get_char();
+                    }
+                }
+                // 如果没进错误态 13，则正常收尾
+                if (state != 13) {
+                    retract();
+                    state = 0;
+                    ret(NUMBER, token);
+                }
             }
             break;
         case 5: // 接收指数符号或第一位数字
@@ -327,14 +385,40 @@ int main(int argc, char *argv[]) {
             get_char();
             if (digit(C))
                 state = 7;
-            else if (letter(C)) {
+            else if (letter(C) && C != 'u' && C != 'U' && C != 'l' &&
+                     C != 'L') {
                 cat();
                 retract();
                 state = 13;
             } else {
-                retract();
-                state = 0;
-                ret(NUMBER, token);
+                int ucnt = 0, lcnt = 0;
+                while (C == 'u' || C == 'U' || C == 'l' || C == 'L') {
+                    if (C == 'u' || C == 'U') {
+                        if (ucnt == 1) {
+                            cat();
+                            state = 13;
+                            break;
+                        }
+                        ++ucnt;
+                        cat();
+                        get_char();
+                    } else { // l or L
+                        if (lcnt == 2) {
+                            cat();
+                            state = 13;
+                            break;
+                        }
+                        ++lcnt;
+                        cat();
+                        get_char();
+                    }
+                }
+                // 如果没进错误态 13，则正常收尾
+                if (state != 13) {
+                    retract();
+                    state = 0;
+                    ret(NUMBER, token);
+                }
             }
             break;
         case 8:
