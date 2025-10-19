@@ -1,8 +1,60 @@
 /*        此为测试样例        */
 /* 编译：g++ -o main main.cpp */
 /* 运行：./main sample.txt    */
+
+
 // KEYWORD
 auto double int struct break else static long
 switch case enum register typedef char extern return
 union const float short unsigned continue for signed
 void default goto sizeof volatile do if while
+
+
+// DELIMITER
+; , : ?
+( ) [ ]
+{ }
+
+
+// OPERATOR
+/* 算术运算符 */    +   -   *   /   %   ++   --
+/* 关系运算符 */    ==  !=  >   <   >=  <= 	
+/* 逻辑运算符 */    &&  ||  ! 				
+/*  位运算符  */    &   |   ^   ~   <<  >> 	
+/* 赋值运算符 */    =   += 	-=  *=  /=  %=  <<=
+                    >>=     &=  ^=  |=
+/* 成员运算符 */    .   ->
+
+
+// IDENTIFIER
+fa8f7wayhnf74y6t16 fasjsiahnuwfnuw w_9j9a_k90wjm _38tj93nwe_
+__a8 dodo charif int3
+
+
+// CHARCON
+'\n' '!' '_' '@'
+'\t' 'a' '6'
+'abc' '\'' L'1' u'\\' U'\010'
+'\x210' '\x210' '\11'
+
+
+// STRING
+"1234+abc" "@" "'\n'" "a\""
+"//" "<0>" "::" "{[1,2,3]}"
+u8"ABC" u"!!" U"\"" L""
+
+
+// NUMBER
+1 1234567890 5555 10000 0
+0.1 9394.183957 0.6 0.0000001 123.456
+6e-10 6E92 0.6e2 5135E+5 9.22E-100 1.0e0
+010 0032 000077 0x15A7 0X234 0X3abcde2 0x1ABCD2F
+123u 10U 56789l 2000L 2023ll 1234LL 666ul 111ull
+8910uL 222uLL 100Ul 1000UL 10000Ull 100000ULL
+1. .23 0.1f 1e-1 3.14E+2 3.0e1l 4.0E2F 5.0L .001e2f
+
+
+// ERROR
+123abc
+"str
+'ch
